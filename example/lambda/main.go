@@ -62,7 +62,8 @@ func main() {
 			authClientID,
 			authClientSecret,
 			userIDReader,
-			tokenStorage))
+			tokenStorage,
+			respBuilder))
 
 	awslambda.Start(lambda.DebugLambdaRequestHandler(mux))
 }
