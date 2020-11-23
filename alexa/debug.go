@@ -38,6 +38,11 @@ func ResponseDebugHandler(handler Handler) HandlerFunc {
 	return func(ctx context.Context, req *Request) (*Response, error) {
 		resp, err := handler.HandleRequest(ctx, req)
 
+		if resp == nil {
+			log.Println("Response is null.")
+			return resp, err
+		}
+
 		respJSON, jsonErr := json.Marshal(resp)
 		if jsonErr != nil {
 			log.Printf("Failed to marshal debug response: %v\n", jsonErr)

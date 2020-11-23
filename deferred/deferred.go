@@ -99,12 +99,13 @@ func (h *HTTPEventSender) Send(ctx context.Context, resp *alexa.Response) error 
 	}
 	defer eventResp.Body.Close()
 
-	if _, err := ioutil.ReadAll(eventResp.Body); err != nil {
+	body, err := ioutil.ReadAll(eventResp.Body)
+	if err != nil {
 		return &SendError{fmt.Sprintf("failed to read event body: %v", err)}
 	}
 
 	if eventResp.StatusCode != http.StatusOK && eventResp.StatusCode != http.StatusAccepted {
-		return &SendError{fmt.Sprintf("event response unexpected status code: %s", eventResp.Status)}
+		return &SendError{fmt.Sprintf("event response unexpected status code: %s\n%s", eventResp.Status, body)}
 	}
 
 	if tokenSniffer.LastToken != nil && token.AccessToken != tokenSniffer.LastToken.AccessToken {

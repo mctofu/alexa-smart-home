@@ -70,20 +70,20 @@ func main() {
 
 func endpoints() []alexa.DiscoverEndpoint {
 	return []alexa.DiscoverEndpoint{
-		alexa.DiscoverEndpoint{
+		{
 			EndpointID:        "temp-sensor-1",
 			FriendlyName:      "Home Temperature",
 			Description:       "Temp monitor",
 			ManufacturerName:  "McTofu",
 			DisplayCategories: []string{alexa.DisplayCategoryTemperatureSensor},
 			Capabilities: []alexa.DiscoverCapability{
-				alexa.DiscoverCapability{
+				{
 					Type:      "AlexaInterface",
 					Interface: alexa.InterfaceTemperatureSensor,
 					Version:   "3",
-					Properties: alexa.DiscoverProperties{
+					Properties: &alexa.DiscoverProperties{
 						Supported: []alexa.DiscoverProperty{
-							alexa.DiscoverProperty{
+							{
 								Name: "temperature",
 							},
 						},
@@ -93,20 +93,20 @@ func endpoints() []alexa.DiscoverEndpoint {
 				},
 			},
 		},
-		alexa.DiscoverEndpoint{
+		{
 			EndpointID:        "switch-1",
 			FriendlyName:      "Fan",
 			Description:       "Power switch for fan",
 			ManufacturerName:  "McTofu",
 			DisplayCategories: []string{alexa.DisplayCategorySwitch},
 			Capabilities: []alexa.DiscoverCapability{
-				alexa.DiscoverCapability{
+				{
 					Type:      "AlexaInterface",
 					Interface: alexa.InterfacePowerController,
 					Version:   "3",
-					Properties: alexa.DiscoverProperties{
+					Properties: &alexa.DiscoverProperties{
 						Supported: []alexa.DiscoverProperty{
-							alexa.DiscoverProperty{
+							{
 								Name: "powerState",
 							},
 						},

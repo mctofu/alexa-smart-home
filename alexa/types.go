@@ -55,6 +55,7 @@ const (
 	NamespaceAuthorization     = "Alexa.Authorization"
 	NamespaceDiscovery         = "Alexa.Discovery"
 	NamespacePowerController   = "Alexa.PowerController"
+	NamespaceSceneController   = "Alexa.SceneController"
 	NamespaceTemperatureSensor = "Alexa.TemperatureSensor"
 )
 
@@ -80,6 +81,7 @@ type ResponseEndpoint struct {
 
 // DisplayCategory enums
 const (
+	DisplayCategoryActivityTrigger   = "ACTIVITY_TRIGGER"
 	DisplayCategoryDoor              = "DOOR"
 	DisplayCategorySwitch            = "SWITCH"
 	DisplayCategoryTemperatureSensor = "TEMPERATURE_SENSOR"
@@ -90,6 +92,7 @@ const (
 const (
 	InterfaceTemperatureSensor = NamespaceTemperatureSensor
 	InterfacePowerController   = NamespacePowerController
+	InterfaceSceneController   = NamespaceSceneController
 )
 
 // EmptyPayload is a payload with no content
@@ -110,10 +113,12 @@ type DiscoverEndpoint struct {
 }
 
 type DiscoverCapability struct {
-	Type       string             `json:"type"`
-	Interface  string             `json:"interface"`
-	Version    string             `json:"version"`
-	Properties DiscoverProperties `json:"properties"`
+	Type                 string              `json:"type"`
+	Interface            string              `json:"interface"`
+	Version              string              `json:"version"`
+	Properties           *DiscoverProperties `json:"properties,omitempty"`
+	SupportsDeactivation *bool               `json:"supportsDeactivation,omitempty"`
+	ProactivelyReported  *bool               `json:"proactivelyReported,omitempty"`
 }
 
 type DiscoverProperties struct {

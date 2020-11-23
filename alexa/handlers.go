@@ -104,3 +104,17 @@ func PowerControllerHandler(turnOn, turnOff Handler) HandlerFunc {
 		}
 	}
 }
+
+// SceneControllerHandler routes activate & deactivate requests
+func SceneControllerHandler(activate, deactivate Handler) HandlerFunc {
+	return func(ctx context.Context, req *Request) (*Response, error) {
+		switch req.Directive.Header.Name {
+		case "Activate":
+			return activate.HandleRequest(ctx, req)
+		case "Deactivate":
+			return deactivate.HandleRequest(ctx, req)
+		default:
+			return nil, fmt.Errorf("SceneControllerHandler: unexpected name: %s", req.Directive.Header.Name)
+		}
+	}
+}
