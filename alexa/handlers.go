@@ -91,6 +91,20 @@ func AuthorizationHandler(clientID, clientSecret string,
 	}
 }
 
+// PercentageControllerHandler routes handling of set & adjust directives
+func PercentageControllerHandler(setPct, adjustPct Handler) HandlerFunc {
+	return func(ctx context.Context, req *Request) (*Response, error) {
+		switch req.Directive.Header.Name {
+		case "SetPercentage":
+			return setPct.HandleRequest(ctx, req)
+		case "AdjustPercentage":
+			return adjustPct.HandleRequest(ctx, req)
+		default:
+			return nil, fmt.Errorf("PercentageControllerHandler: unexpected name: %s", req.Directive.Header.Name)
+		}
+	}
+}
+
 // PowerControllerHandler routes turn on & off requests
 func PowerControllerHandler(turnOn, turnOff Handler) HandlerFunc {
 	return func(ctx context.Context, req *Request) (*Response, error) {

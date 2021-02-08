@@ -54,6 +54,7 @@ func main() {
 	userIDReader := &alexa.ProfileUserIDReader{HTTPDoer: http.DefaultClient}
 
 	mux := alexa.NewNamespaceMux()
+	mux.HandleFunc(alexa.NamespacePercentageController, alexa.DeferredRelayHandler(sqsRelay, respBuilder))
 	mux.HandleFunc(alexa.NamespacePowerController, alexa.DeferredRelayHandler(sqsRelay, respBuilder))
 	mux.HandleFunc(alexa.NamespaceDiscovery, alexa.StaticDiscoveryHandler(respBuilder, endpoints()...))
 	mux.HandleFunc(alexa.NamespaceAlexa, tempReader.GetTemperature)
@@ -111,6 +112,29 @@ func endpoints() []alexa.DiscoverEndpoint {
 							},
 						},
 						ProactivelyReported: true,
+						Retrievable:         true,
+					},
+				},
+			},
+		},
+		{
+			EndpointID:        "window-1",
+			FriendlyName:      "Window",
+			Description:       "Window control",
+			ManufacturerName:  "McTofu",
+			DisplayCategories: []string{alexa.DisplayCategoryOther},
+			Capabilities: []alexa.DiscoverCapability{
+				{
+					Type:      "AlexaInterface",
+					Interface: alexa.InterfacePercentageController,
+					Version:   "3",
+					Properties: &alexa.DiscoverProperties{
+						Supported: []alexa.DiscoverProperty{
+							{
+								Name: "percentage",
+							},
+						},
+						ProactivelyReported: false,
 						Retrievable:         true,
 					},
 				},

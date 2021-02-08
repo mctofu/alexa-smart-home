@@ -51,12 +51,13 @@ type ResponseContext struct {
 
 // Namespace enums
 const (
-	NamespaceAlexa             = "Alexa"
-	NamespaceAuthorization     = "Alexa.Authorization"
-	NamespaceDiscovery         = "Alexa.Discovery"
-	NamespacePowerController   = "Alexa.PowerController"
-	NamespaceSceneController   = "Alexa.SceneController"
-	NamespaceTemperatureSensor = "Alexa.TemperatureSensor"
+	NamespaceAlexa                = "Alexa"
+	NamespaceAuthorization        = "Alexa.Authorization"
+	NamespaceDiscovery            = "Alexa.Discovery"
+	NamespacePercentageController = "Alexa.PercentageController"
+	NamespacePowerController      = "Alexa.PowerController"
+	NamespaceSceneController      = "Alexa.SceneController"
+	NamespaceTemperatureSensor    = "Alexa.TemperatureSensor"
 )
 
 type ContextProperty struct {
@@ -83,6 +84,8 @@ type ResponseEndpoint struct {
 const (
 	DisplayCategoryActivityTrigger   = "ACTIVITY_TRIGGER"
 	DisplayCategoryDoor              = "DOOR"
+	DisplayCategoryExteriorBlind     = "EXTERIOR_BLIND"
+	DisplayCategoryInteriorBlind     = "INTERIOR_BLIND"
 	DisplayCategorySwitch            = "SWITCH"
 	DisplayCategoryTemperatureSensor = "TEMPERATURE_SENSOR"
 	DisplayCategoryOther             = "OTHER"
@@ -90,9 +93,10 @@ const (
 
 // Interface enums
 const (
-	InterfaceTemperatureSensor = NamespaceTemperatureSensor
-	InterfacePowerController   = NamespacePowerController
-	InterfaceSceneController   = NamespaceSceneController
+	InterfacePercentageController = NamespacePercentageController
+	InterfacePowerController      = NamespacePowerController
+	InterfaceSceneController      = NamespaceSceneController
+	InterfaceTemperatureSensor    = NamespaceTemperatureSensor
 )
 
 // EmptyPayload is a payload with no content
@@ -154,4 +158,12 @@ const (
 type TemperatureValue struct {
 	Value float32 `json:"value"`
 	Scale string  `json:"scale"`
+}
+
+type SetPercentagePayload struct {
+	Percentage uint8 `json:"percentage"`
+}
+
+type AdjustPercentagePayload struct {
+	PercentageDelta int8 `json:"percentageDelta"`
 }

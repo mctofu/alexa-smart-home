@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -47,8 +48,13 @@ func main() {
 	respBuilder := alexa.NewResponseBuilder()
 
 	fanSwitch := fanSwitch{respBuilder}
+	windowControl := windowControl{respBuilder}
 
 	mux := alexa.NewNamespaceMux()
+	mux.Handle(alexa.NamespacePercentageController,
+		alexa.PercentageControllerHandler(
+			alexa.HandlerFunc(windowControl.SetPercentage),
+			alexa.HandlerFunc(windowControl.AdjustPercentage)))
 	mux.Handle(alexa.NamespacePowerController,
 		alexa.PowerControllerHandler(
 			alexa.HandlerFunc(fanSwitch.TurnOn),
@@ -138,4 +144,49 @@ func (f fanSwitch) TurnOff(ctx context.Context, req *alexa.Request) (*alexa.Resp
 		TimeOfSample:              time.Now(),
 		UncertaintyInMilliseconds: 500,
 	}), nil
+}
+
+type windowControl struct {
+	respBuilder *alexa.ResponseBuilder
+}
+
+func (w *windowControl) SetPercentage(ctx context.Context, req *alexa.Request) (*alexa.Response, error) {
+	var targetPct alexa.SetPercentagePayload
+	if err := json.Unmarshal(req.Directive.Payload, &targetPct); err != nil {
+		return nil, fmt.Errorf("windowControl.SetPercentage: invalid payload: %v", err)
+	}
+	fmt.Printf("SetPercentage: %d\n", targetPct.Percentage)
+
+	return w.respBuilder.BasicResponse(req, alexa.ContextProperty{
+		Namespace:                 alexa.NamespacePercentageController,
+		Name:                      "percentage",
+		Value:                     w.marshalValue(targetPct.Percentage),
+		TimeOfSample:              time.Now(),
+		UncertaintyInMilliseconds: 500,
+	}), nil
+}
+
+func (w *windowControl) AdjustPercentage(ctx context.Context, req *alexa.Request) (*alexa.Response, error) {
+	var adjustPct alexa.AdjustPercentagePayload
+	if err := json.Unmarshal(req.Directive.Payload, &adjustPct); err != nil {
+		return nil, fmt.Errorf("windowControl.AdjustPercentage: invalid payload: %v", err)
+	}
+	fmt.Printf("AdjustPercentage: %d\n", adjustPct.PercentageDelta)
+
+	return w.respBuilder.BasicResponse(req, alexa.ContextProperty{
+		Namespace:                 alexa.NamespacePercentageController,
+		Name:                      "percentage",
+		Value:                     w.marshalValue(50),
+		TimeOfSample:              time.Now(),
+		UncertaintyInMilliseconds: 500,
+	}), nil
+}
+
+func (w *windowControl) marshalValue(val uint8) json.RawMessage {
+	jsonVal, err := json.Marshal(val)
+	if err != nil {
+		panic(fmt.Sprintf("unexpected error: %v", err))
+	}
+
+	return jsonVal
 }
